@@ -6,8 +6,9 @@ price = np.array([98, 110, 200, 210, 280, 265, 300, 287, 325, 300, 290])
 
 plt.plot(area, price, 'o', color='black');
 
-theta_1 = 0.06 # m
-theta_0 = 150  # b
+theta_1 = 0.00               # m : slope
+theta_0 = np.average(price)  # b : y-intercept
+
 
 x = np.linspace(0, 2500, 2500)
 y = theta_1 * x + theta_0
@@ -32,7 +33,3 @@ mse = np.sum((price - h)*(price - h)) / (2*11)
 
 print()
 print(mse)
-
-
-
-
