@@ -33,13 +33,32 @@ def CostFunction(y,h):
 #-------------------------------------------------------------------------------------
 # This function is the model that is been used to adjust the data.
 #-------------------------------------------------------------------------------------
+
+# NOTE: theta_0 == m == slope
+# NOTE: theta_1 == b == y-intercept
+
 def model(x):
 
   m = x.shape[0] # Number of samples
   return theta_0 * np.ones(m)
 
-# def g_d_model() # gradient decent model 
+def g_d_model(m, b, X, Y, learning_rate): # gradient decent model 
+    m_deriv = 0
+    b_deriv = 0
+    N = len(X)
+    for i in range(N):
+        # Calculate partial derivatives
+        # -2x(y - (mx + b))
+        m_deriv += -2*X[i] * (Y[i] - (m*X[i] + b))
 
+        # -2(y - (mx + b))
+        b_deriv += -2*(Y[i] - (m*X[i] + b))
+
+    # We subtract because the derivatives point in direction of steepest ascent
+    m -= (m_deriv / float(N)) * learning_rate
+    b -= (b_deriv / float(N)) * learning_rate
+
+    return m, b
 
 #-------------------------------------------------------------------------------------
 # This function is used to support visualize the training algorithm evolution.
@@ -49,7 +68,7 @@ def plotdata(x,y, thetas_0, costs):
   plt.rcParams["figure.figsize"] = (15,5)
   fig, (ax1, ax2) = plt.subplots(1, 2)
 
-  xdata = np.linspace(0,xlim,xlim)  # Generates a sequence fo help ploting the line
+  xdata = np.linspace(0,xlim,xlim)  # Generates a sequence to help plot the line
   print(xdata)
   ax1.plot(area, price, 'o')        # Plots the original data
   ax1.plot(xdata,model(xdata))      # Plots the line model
@@ -85,7 +104,7 @@ def plotdata(x,y, thetas_0, costs):
 # Define initial variables for the model and training algorithm
 #-------------------------------------------------------------------------------------
 initial_theta_0 = 0
-epochs = 30
+epochs = 5
 initial_step = 10
 #-------------------------------------------------------------------------------------
 
@@ -100,8 +119,11 @@ sleeping_time = 0.0
 
 thetas_0 = [initial_theta_0]
 costs = [current_cost]
-#--------------------------------------------------------------------------------------
 
+
+#--------------------------------------------------------------------------------------
+# NOTE: theta_0 == m == slope
+# NOTE: theta_1 == b == y-intercept
 
 # Training Algorithm
 # This section provides the basic loop for training algorithm. 
